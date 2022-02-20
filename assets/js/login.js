@@ -11,7 +11,8 @@ $(function() {
         $('.reg-box').hide()
     })
 
-    let form = layui.form;
+    let form = layui.form
+    let layer = layui.layer
     form.verify({
             pwd: [
                 /^[\S]{6,12}$/, '草，密码必须6到12位，且不能出现空格'
@@ -31,11 +32,33 @@ $(function() {
         //发起请求
     $("#form_reg").on("submit", (e) => {
         e.preventDefault()
-        $.post('http://www.liulongbin.top:3007/api/reguser', { username: $("#form_reg [name=username]").val(), password: $("#form_reg [name=password]").val() }, (res) => {
+        let date = { username: $("#form_reg [name=username]").val(), password: $("#form_reg [name=password]").val() }
+        $.post('/api/reguser', date, (res) => {
             if (res.status !== 0) {
-                return console.log(res.message);
+                return layer.msg(res.message);
             }
-            console.log("注册成功");
+            layer.msg('注册成功，请登录！')
+                //模拟点击
+            $('#link_login').click()
+        })
+    })
+    $('#form_login').on('submit', function(e) {
+        e.preventDefault()
+        $.ajax({
+            url: '/api/login',
+            method: 'POST',
+            // 快速获取表单中的数据
+            data: $(this).serialize(),
+            success: (res) => {
+                if (res.status !== 0) {
+                    return layer.msg('登录失败！')
+                }
+                layer.msg('登录成功！')
+                    // 将登录成功得到的 token 字符串，保存到 localStorage 中
+                localStorage.setItem('token', res.token)
+                    // 跳转到后台主页
+                location.href = '/index.html'
+            }
         })
     })
 })
