@@ -10,8 +10,9 @@ $(function() {
             layer.close(index)
         });
     })
-})
 
+
+})
 
 function getUserInfo() {
     $.ajax({
@@ -34,7 +35,7 @@ function renderAvstar(user) {
     $('#welcome').html('欢迎&nbsp;&nbsp;' + name)
     if (user.user_pic !== null) {
         $('.layui-nav-img').attr('src', user.user_pic).show()
-
+        $('.text-avatar').hide()
     } else {
         $('.layui-nav-img').hide()
         let first = name[0].toUpperCase()
